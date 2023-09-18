@@ -14,14 +14,20 @@ router.post('/', (req, res) => {
 			fetch(`https://api.openweathermap.org/data/2.5/weather?q=${req.body.cityName}&appid=${myApiKey}&units=metric`)
 				.then(response => response.json())
 				.then(apiData => {
-					// Creates new document with weather data
-					const newCity = new City({
-						cityName: req.body.cityName,
-						main: apiData.weather[0].main,
-						description: apiData.weather[0].description,
-						tempMin: apiData.main.temp_min,
-						tempMax: apiData.main.temp_max,
-					});
+					 // Capitalize the first letter of each word in the city name
+					 const capitalizedCityName = req.body.cityName
+					 .split(' ')
+					 .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+					 .join(' ');
+		 
+				   // Creates new document with weather data
+				   const newCity = new City({
+					 cityName: capitalizedCityName, // Use the capitalized name
+					 main: apiData.weather[0].main,
+					 description: apiData.weather[0].description,
+					 tempMin: apiData.main.temp_min,
+					 tempMax: apiData.main.temp_max,
+				   });
 
 					// Finally save in database
 					newCity.save().then(newDoc => {
