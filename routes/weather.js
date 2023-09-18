@@ -4,14 +4,14 @@ require('dotenv').config();
 const fetch = require('node-fetch');
 const City = require('../models/cities');
 
-const API_KEY = process.env.OWN_API_KEY;
+const myApiKey = process.env.API_KEY;
 //
 router.post('/', (req, res) => {
 	// Check if the city has not already been added
 	City.findOne({ cityName: { $regex: new RegExp(req.body.cityName, 'i') } }).then(dbData => {
 		if (dbData === null) {
 			// Request OpenWeatherMap API for weather data
-			fetch(`https://api.openweathermap.org/data/2.5/weather?q=${req.body.cityName}&appid=${API_KEY}&units=metric`)
+			fetch(`https://api.openweathermap.org/data/2.5/weather?q=${req.body.cityName}&appid=${myApiKey}&units=metric`)
 				.then(response => response.json())
 				.then(apiData => {
 					// Creates new document with weather data
